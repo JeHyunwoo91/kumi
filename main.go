@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"html/template"
 	"io/ioutil"
 	"net/http"
@@ -21,7 +20,7 @@ import (
 )
 
 const awsS3DomainPrefix = "http://s3.ap-northeast-2.amazonaws.com/"
-const azureBlobDomainPrefix = "https://.blob.core.windows.net/vod"
+const azureBlobDomainPrefix = "https://wavveheadendvod.blob.core.windows.net/vod"
 
 const acquisitionGET = "http://get-media-vod.internal.wavve.com/v1/vods30/Acquisition/{{.ChannelID}}?contentId={{.ContentID}}&acquire={{.Acquire}}&period=0"
 const acquisitionINSERT = "http://get-media-vod.internal.wavve.com/v1/vods30/Acquisition/{{.ChannelID}}?contentId={{.ContentID}}&cornerId={{.CornerID}}&filepath={{.FilePath}}&acquire={{.Acquire}}&bitrate={{.Bitrate}}&isUse={{.IsUse}}&version={{.Version}}"
@@ -91,7 +90,7 @@ func checkCachedList(list []model.Meta) (nonExistList []model.Meta, err error) {
 	for _, content := range list {
 		val, _err := redis.Get(content.ContentID)
 
-		fmt.Println("Get Err: ", _err)
+		logger.Error("Get Err: ", _err)
 		if _err != nil && _err.Error() != "redigo: nil returned" {
 			return []model.Meta{}, _err
 		}
@@ -276,7 +275,7 @@ func main() {
 			_meta.CornerID = meta[3]
 			_meta.Version = "0"
 			_meta.Bitrate = meta[5]
-			_meta.FilePath = path.Join(fileURLPrefix, content)
+			_meta.FilePath = fileURLPrefix + "/" + content
 			_meta.IsUse = "Y"
 			_meta.Acquire = "N"
 
