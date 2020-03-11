@@ -11,7 +11,7 @@ import (
 )
 
 // DefaultLogPath ...
-const DefaultLogPath = "/home/wavve/log/kumi/kumi.log"
+const DefaultLogPath = "/data/log/kumi/kumi.log"
 
 // Logger logger struct
 type Logger struct {
